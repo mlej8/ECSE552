@@ -246,7 +246,7 @@ xint = [int(epochnum) for epochnum in range(epoch+1)]
 plt.xticks(xint)
 
 plt.xlabel('Epoch') # num of epoch in x-axis
-plt.ylabel('SSE') # mean of SSE in y-axis
+plt.ylabel('Mean of SSE') # mean of SSE in y-axis
 plt.title("MSE over number of epochs")
 plt.legend()
 plt.savefig('error.pdf')
