@@ -21,7 +21,7 @@ eta = 0.1 # intial learning rate
 gamma = 0.1 # multiplier for the learning rate
 stepsize = 200 # epochs before changing learning rate
 threshold = 0.08 # stopping criterion
-test_interval = 10 # number of epoch before validating
+test_interval = 1 # number of epoch before validating
 max_epoch = 3000
 
 def sigmoid(z):
@@ -54,7 +54,6 @@ class MLP(object):
         :param l: Network depth
         :param layer1_dim: Width of first hidden layer
         :param layer1_dim: Width of second hidden layer
-        :return: 
         """
 
         # storing the dimensions of the hidden layers
@@ -108,6 +107,24 @@ class MLP(object):
             self.outputs.append(x)
         
         return self.loss(x, y_true)
+    
+    def predict(self, x, y_true):
+        """ 
+        Given a sample, execute a forward pass to compute the loss.
+
+        :param x: a data point.
+        :param y: label of the data point.
+        """
+        # for each layer
+        for i in range(self.l):
+
+            # saving the input to the nonlinearity/activation of each hidden layer
+            a = self.bias[i] + self.weights[i].dot(x)
+
+            # update x
+            x = sigmoid(a)
+        
+        return self.loss(x, y_true)
 
     def loss(self, y_pred, y_true):
         """ 
@@ -152,7 +169,7 @@ class MLP(object):
 
     def step(self, gradients_w, gradients_b):
         """
-        Method that updates the weights and biases of the MLP using: w <- w - eta * gradient_f(w) 
+        Method that updates the weights and biases of the MLP using: w <- w - eta * gradient
         """
         for i, g in enumerate(gradients_w):
             self.weights[i] -= eta * g
@@ -162,6 +179,10 @@ class MLP(object):
 
 # initialize the Multilayer Perceptron model and its weights
 net = MLP(64, 16)
+
+# empty lists storing error for plotting loss
+train_err_progress = []
+val_err_progress = []
 
 for epoch in range(0, max_epoch):
     
@@ -190,14 +211,43 @@ for epoch in range(0, max_epoch):
         sse += squared_error
 
     train_mse = sse/len(x_train)
+    
+    # keep track of training loss at each epoch
+    train_err_progress.append(train_mse)
 
     if epoch % test_interval == 0: 
         # [TODO] test on validation set here
+        sse_val = 0
+        for i in range(len(x_val)):
+            x_in = np.array(x_val[i]).reshape((num_features, 1))
+            y = np.array(y_val[i]).reshape((output_dim, 1))
+
+            squared_error = net.predict(x_in,y)
+            sse_val += squared_error
+        val_mse = sse_val / len(x_val)
+        val_err_progress.append(val_mse)
 
         # if termination condition is satisfied, exit
         if val_mse < threshold:
             break
+    print(f"Epoch: {epoch} \tTraining Loss: {train_mse} \tValidation Loss: {val_mse}")
 
     if epoch % stepsize == 0 and epoch != 0:
         eta = eta*gamma
         print('Changed learning rate to lr = ' + str(eta))
+
+# Code to plot the training and validation loss
+x1 = np.linspace(0,epoch, len(train_err_progress))
+x2 = np.linspace(0,epoch, len(val_err_progress))
+plt.plot(x1, train_err_progress, label="Training Error")
+plt.plot(x2, val_err_progress, label="Validation Error")
+
+xint = [int(epochnum) for epochnum in range(epoch+1)]
+plt.xticks(xint)
+
+plt.xlabel('Epoch') # num of epoch in x-axis
+plt.ylabel('SSE') # mean of SSE in y-axis
+plt.title("MSE over number of epochs")
+plt.legend()
+plt.savefig('error.pdf')
+plt.savefig('error.png')
