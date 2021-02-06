@@ -44,10 +44,3 @@ dataset = CustomDataset(
     torch.Tensor(entity_features.to_numpy()), 
     torch.Tensor(labels.to_numpy())
     )
-
-# using a dataloader to load the data
-dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=0)
-
-for i,data in enumerate(dataloader):
-    (x1,x2,y) = data
-    print("yo")
