@@ -1,6 +1,6 @@
 import pandas as pd
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 
 class CustomDataset(Dataset):
     def __init__(self, entity_features, labels):

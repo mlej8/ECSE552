@@ -102,6 +102,8 @@ optimizer = torch.optim.SGD(model.parameters(), lr=lr)
 # lists to store train/val loss
 train_losses = []
 val_losses = []
+train_accs = []
+val_accs = []
 
 # see if cuda available
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -121,6 +123,8 @@ for epoch in range(max_epoch):
     # variable to keep track of training/validation loss per epoch 
     train_loss = 0
     val_loss = 0
+    train_acc = 0
+    val_acc = 0
 
     for data, labels in train_loader:
         
@@ -139,6 +143,9 @@ for epoch in range(max_epoch):
 
         # accumulate training loss
         train_loss += loss
+
+        # training accuracy per batch
+        train_acc += ((y_hat >= 0.5).float() == labels).float().mean()
         
         # compute gradients
         loss.backward()
@@ -151,6 +158,10 @@ for epoch in range(max_epoch):
 
     # append training loss per sample 
     train_losses.append(loss_per_sample)
+    
+    # append average training accuracy per batch
+    train_acc_per_batch = train_acc/(train_size/batch_size)
+    train_accs.append(train_acc_per_batch)
 
     # set model in validation mode
     model.eval()
@@ -169,14 +180,21 @@ for epoch in range(max_epoch):
             # accumulate validation loss
             val_loss += criterion(y_hat, labels)
 
+            # training accuracy per batch
+            val_acc += ((y_hat >= 0.5).float() == labels).float().mean()
+
     # compute validation loss per sample
     val_loss_per_sample = val_loss/val_size
 
     # append validation loss per sample 
     val_losses.append(val_loss_per_sample)
+    
+    # append validation acc per sample 
+    val_acc_per_batch = val_acc/(val_size/batch_size)
+    val_accs.append(val_acc_per_batch)
 
     end_time = datetime.now()
-    print(f"Epoch {epoch} in {end_time - start_time}\tTraining loss: {loss_per_sample}\tValidation loss: {val_loss_per_sample}")
+    print(f"Epoch {epoch} in {end_time - start_time}\tTraining loss: {loss_per_sample}\tValidation loss: {val_loss_per_sample}\tTraining accuracy: {train_acc_per_batch}\tValidation accuracy: {val_acc_per_batch}")
     start_time = end_time  
 
 # saving model
@@ -198,7 +216,22 @@ plt.savefig('error.pdf')
 plt.savefig('error.png')
 plt.close()
 
-# get the data from class 0 and 1
+# Code to plot the training and validation accuracy
+var1 = np.linspace(0, max_epoch, len(train_accs))
+var2 = np.linspace(0, max_epoch, len(val_accs))
+plt.figure(figsize=(24,8))
+plt.plot(var1, train_accs, label="Training accuracy")
+plt.plot(var2, val_accs, label= "Validation accuracy")
+plt.xticks([epoch_num for epoch_num in range(max_epoch)])
+plt.xlabel('Epoch') # num of epoch in x-axis
+plt.ylabel('Average accuracy per batch') 
+plt.title("Average accuracy per batch over number of epochs")
+plt.legend()
+plt.savefig('accuracies.pdf')
+plt.savefig('accuracies.png')
+plt.close()
+
+# get the data from class 0 and 1 in the validation set
 class0 = []
 class1 = []
 for data, label in val: 
@@ -214,7 +247,7 @@ get_values = lambda x: x.data.detach().numpy()
 param_gen = model.parameters()
 weights = get_values(next(param_gen))
 biases = get_values(next(param_gen)).reshape(-1, 1)
-lines = np.concatenate([weights, biases], axis=1)
+weights_and_biases = np.concatenate([weights, biases], axis=1)
 
 """ 
 Since the ReLU function is defined as 
@@ -225,14 +258,15 @@ We want to know when does
 
     0 = w1x1 + w2x2 + b
 
-In order to find two points to plot the decision boundary, we must set x1 = 0 and x2 = 0 and find their opposite coordinate (find x2 for x1, vice versa)
+In order to find two points to plot the decision boundary, we must set x1 = -7 and x1 = 7 and find x2
 
-    x1 = -b/w1          x2 = 0 
-    x2 = -b/w2          x1 = 0
+    x2 = (- b - (w1*-7))/w2          x1 = -7
+    x2 = (- b - (w1*7))/w2           x1 = 7
 """
 point_pairs = []
-for line in lines: 
-    point_pairs.append(((-line[2] * line[0], 0), (0 ,-line[2] * line[1])))
+for params in weights_and_biases: 
+    point1 = (-7, )
+    point_pairs.append(((-7, (-params[2] - (params[0] * -7))/params[1]), (7 ,(-params[2]-(params[0] *7))/params[1])))
 
 # make a scatter plot of the validation data
 plt.figure(figsize=(8,8))
@@ -244,6 +278,8 @@ for point in point_pairs:
     plt.plot(x1_values, x2_values)
 plt.xlabel('x1') # num of epoch in x-axis
 plt.ylabel('x2') 
+plt.xlim(-10, 10) # set x1-axis limit 
+plt.ylim(-10, 10) # set x2-axis limit 
 plt.title("Validation dataset")
 plt.legend()
 plt.savefig('validation.pdf') 
