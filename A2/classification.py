@@ -278,8 +278,8 @@ for point in point_pairs:
     plt.plot(x1_values, x2_values)
 plt.xlabel('x1') # num of epoch in x-axis
 plt.ylabel('x2') 
-plt.xlim(-10, 10) # set x1-axis limit 
-plt.ylim(-10, 10) # set x2-axis limit 
+plt.xlim(-7, 7) # set x1-axis limit 
+plt.ylim(-7, 7) # set x2-axis limit 
 plt.title("Validation dataset")
 plt.legend()
 plt.savefig('validation.pdf') 
