@@ -37,12 +37,13 @@ y[:dataset_size//2] = 0
 plt.scatter(x[:dataset_size//2,0], x[:dataset_size//2,1], label='0')
 plt.scatter(x[dataset_size//2:,0], x[dataset_size//2:,1], label='1', marker='s')
 plt.legend()
-plt.show()
+plt.savefig('dataset.pdf')
+plt.savefig('dataset.png')
 plt.close()
 
 # creating our dataset using PyTorch
 dataset = torch.utils.data.TensorDataset(
-            torch.Tensor(x), # convert x into tensors 
+            torch.Tensor(x), 
             torch.Tensor(y)
             )
 
@@ -92,7 +93,7 @@ model = NeuralNetwork(n_in=2, n_hidden=30)
 
 """ 
 Since activation function of the output layer is sigmoid, we will use binary cross entropy as our loss function. 
-This is due to the fact that we are doing a classificaiton task. 
+This is due to the fact that we are doing a classification task. 
 """
 criterion = torch.nn.BCELoss()
 
@@ -265,7 +266,6 @@ In order to find two points to plot the decision boundary, we must set x1 = -7 a
 """
 point_pairs = []
 for params in weights_and_biases: 
-    point1 = (-7, )
     point_pairs.append(((-7, (-params[2] - (params[0] * -7))/params[1]), (7 ,(-params[2]-(params[0] *7))/params[1])))
 
 # make a scatter plot of the validation data
