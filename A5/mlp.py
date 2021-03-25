@@ -130,5 +130,5 @@ if __name__ == "__main__":
     plt.savefig(folder + "/mlp_training_validation.png")
 
     # test
-    results = trainer.test(test_dataloaders=test_loader,verbose=True) # NOTE: loads the best checkpoint automatically
+    result = trainer.test(test_dataloaders=test_loader,verbose=True) # NOTE: loads the best checkpoint automatically
     print(f"Final test score: {result}")
