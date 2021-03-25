@@ -71,6 +71,19 @@ class MLP(pl.LightningModule):
         self.log('val_loss', loss, on_step=False, on_epoch=True, prog_bar=True)
         
         return loss
+    
+    def test_step(self, batch, batch_idx):
+        # get data and target
+        data, target = batch
+        
+        # forward pass
+        preds = self(data)
+        
+        # compute MSE loss
+        loss = F.mse_loss(preds, target)
+
+        # log validation loss
+        self.log('test_loss', loss, on_step=False, on_epoch=True, prog_bar=True)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters())
@@ -117,4 +130,5 @@ if __name__ == "__main__":
     plt.savefig(folder + "/mlp_training_validation.png")
 
     # test
-    trainer.test(test_dataloaders=test_loader,verbose=True) # NOTE: loads the best checkpoint automatically
+    results = trainer.test(test_dataloaders=test_loader,verbose=True) # NOTE: loads the best checkpoint automatically
+    print(f"Final test score: {result}")
