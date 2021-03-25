@@ -109,8 +109,8 @@ if __name__ == "__main__":
     trainer.fit(model=model, train_dataloader=train_loader, val_dataloaders=val_loader)
 
     # plot training
-    plt.plot(range(5), logger.metrics['train_loss'], lw=2, label='Training Loss')
-    plt.plot(range(5), logger.metrics['val_loss'], lw=2, label='Validation Loss')
+    plt.plot(range(len(logger.metrics['train_loss'])), logger.metrics['train_loss'], lw=2, label='Training Loss')
+    plt.plot(range(len(logger.metrics['val_loss'])), logger.metrics['val_loss'], lw=2, label='Validation Loss')
     plt.legend()
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
