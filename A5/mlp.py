@@ -21,20 +21,18 @@ class MLP(pl.LightningModule):
     def __init__(self, feature_size, target_size, dropout=0.2):
         super(MLP, self).__init__()
         self.fc1 = nn.Linear(k*feature_size, 64)
-        self.fc2 = nn.Linear(64, 128)
-        self.fc3 = nn.Linear(128, 64)
-        self.fc4 = nn.Linear(64, 32)
-        self.fc5 = nn.Linear(32, target_size)
+        self.fc2 = nn.Linear(64, 64)
+        self.fc3 = nn.Linear(64, 32)
+        self.fc4 = nn.Linear(32, target_size)
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
-        # expand vector to
+        # expand matrix into a 1D vector
         x = x.reshape(x.size(0), -1)
         x = F.relu(self.fc1(x))
-        x = self.dropout(F.relu(self.fc2(x)))
-        x = self.dropout(F.relu(self.fc3(x)))
-        x = F.relu(self.fc4(x))
-        output = self.fc5(x)
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        output = self.fc4(x)
         return output
 
     def training_step(self, batch, batch_idx):
@@ -131,4 +129,8 @@ if __name__ == "__main__":
 
     # test
     result = trainer.test(test_dataloaders=test_loader,verbose=True) # NOTE: loads the best checkpoint automatically
-    print(f"Final test score: {result}")
+    
+    # save test result
+    PATH =  folder + '/result'
+    with open(PATH, "w") as f:
+        f.write(f"Final test score: {result}")
