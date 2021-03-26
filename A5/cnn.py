@@ -115,7 +115,7 @@ if __name__ == "__main__":
     # define trainer 
     trainer = pl.Trainer(
       default_root_dir=folder, # Lightning automates saving and loading checkpoints
-      max_epochs=epochs, gpus=0,
+      max_epochs=epochs, gpus=1,
       logger=logger, 
       progress_bar_refresh_rate=30, 
       callbacks=[early_stopping_callback, checkpoint_callback])
