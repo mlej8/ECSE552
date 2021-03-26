@@ -17,6 +17,10 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import os
 
+""" 
+Input is aranged following this format: https://pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html
+"""
+
 class LSTM(pl.LightningModule):
     def __init__(self, input_size, hidden_size, target_size, num_layers=2, dropout=0):
         super(LSTM, self).__init__()
@@ -36,6 +40,11 @@ class LSTM(pl.LightningModule):
         We feed the entire sequence all at once - the first value returned by LSTM is all of the hidden states throughout the sequence.
         The second second is just the most recent hidden state. 
         The reason for this is that: output will give you access to all hidden states in the sequence and "hidden" will allow you to continue the sequence and backpropagate by passing it as an argument to the lstm at a later time
+
+        Input size: # of features
+        Sequence length: k
+        
+        Input shape: (batch_size, seq_len, num_features/input_size)
         """
         output, (h_n, c_n) = self.lstm(x, hidden)
         output = self.fc(output[:,-1,:])
