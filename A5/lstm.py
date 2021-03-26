@@ -33,7 +33,8 @@ class LSTM(pl.LightningModule):
         
         # network
         self.lstm = nn.LSTM(input_size=input_size,hidden_size=hidden_size, num_layers=num_layers, batch_first=True, dropout=dropout) 
-        self.fc = nn.Linear(hidden_size, target_size)
+        self.fc = nn.Linear(hidden_size, hidden_size//2)
+        self.fc2 = nn.Linear(hidden_size//2, target_size)
     
     def forward(self, x, hidden):
         """ 
@@ -48,6 +49,7 @@ class LSTM(pl.LightningModule):
         """
         output, (h_n, c_n) = self.lstm(x, hidden)
         output = self.fc(output[:,-1,:])
+        output = self.fc2(output)
         return output
 
     def training_step(self, batch, batch_idx):
@@ -128,7 +130,7 @@ if __name__ == "__main__":
       callbacks=[early_stopping_callback, checkpoint_callback])
 
     # create model
-    model = LSTM(input_size=len(features), hidden_size=32, target_size=len(targets), num_layers=4, dropout=0.5)
+    model = LSTM(input_size=len(features), hidden_size=32, target_size=len(targets), num_layers=4, dropout=0.1)
 
     # train
     trainer.fit(model=model, train_dataloader=train_loader, val_dataloaders=val_loader)
