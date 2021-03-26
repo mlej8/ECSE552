@@ -33,7 +33,7 @@ class CNN(pl.LightningModule):
         self.fc2 = nn.Linear(16, target_size)
         
     def forward(self,x):
-        # transform input into (batch_size, number of channels, time steps) as original form is (batch_size, number of channels, time steps)
+        # transform input into (batch_size, number of channels, seq_len) as original form is (batch_size, seq_len, number of channels)
         x = x.transpose(1,2)
         x = F.relu(self.conv1(x))
         x = self.pooling(x)
