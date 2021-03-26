@@ -99,13 +99,13 @@ if __name__ == "__main__":
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    # # early stoppping
-    # early_stopping_callback = EarlyStopping(
-    #   monitor='val_loss', # monitor validation loss
-    #   verbose=True, # log early-stop events
-    #   patience=patience,
-    #   min_delta=0.00 # minimum change is 0
-    #   )
+    # early stoppping
+    early_stopping_callback = EarlyStopping(
+      monitor='val_loss', # monitor validation loss
+      verbose=True, # log early-stop events
+      patience=patience,
+      min_delta=0.00 # minimum change is 0
+      )
 
     # update checkpoints based on validation loss by using ModelCheckpoint callback monitoring 'val_loss'
     checkpoint_callback = ModelCheckpoint(monitor='val_loss')
@@ -116,10 +116,10 @@ if __name__ == "__main__":
       max_epochs=epochs, gpus=0, # TODO change this
       logger=logger, 
       progress_bar_refresh_rate=30, 
-      callbacks=[checkpoint_callback])
+      callbacks=[early_stopping_callback, checkpoint_callback])
 
     # create model
-    model = LSTM(input_size=len(features), hidden_size=8, target_size=len(targets)) # , num_layers=4
+    model = LSTM(input_size=len(features), hidden_size=32, target_size=len(targets), num_layers=4)
 
     # train
     trainer.fit(model=model, train_dataloader=train_loader, val_dataloaders=val_loader)
