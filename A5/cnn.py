@@ -21,7 +21,6 @@ import os
 Using multivariate CNN model and following multiple input series paradigm. 
 https://machinelearningmastery.com/how-to-develop-convolutional-neural-network-models-for-time-series-forecasting/
 """
-
 class CNN(pl.LightningModule):
     def __init__(self, feature_size, target_size, kernel_size, dropout=0.2):
         super(CNN, self).__init__()
@@ -31,8 +30,7 @@ class CNN(pl.LightningModule):
         self.conv2 = nn.Conv1d(in_channels=32, out_channels=64, kernel_size=kernel_size)
         self.pooling = nn.MaxPool1d(2)
         self.fc = nn.Linear(64,32)
-        self.fc2 = nn.Linear(32, 16)
-        self.fc3 = nn.Linear(16, target_size)
+        self.fc2 = nn.Linear(32, target_size)
         
     def forward(self,x):
         # transform input into (batch_size, number of channels, seq_len) as original form is (batch_size, seq_len, number of channels)
@@ -42,8 +40,7 @@ class CNN(pl.LightningModule):
         x = self.pooling(x)
         x = torch.flatten(x,1)
         x = F.relu(self.fc(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = self.fc2(x)
         return x
 
     def training_step(self, batch, batch_idx):
@@ -140,4 +137,8 @@ if __name__ == "__main__":
 
     # test
     result = trainer.test(test_dataloaders=test_loader,verbose=True) # NOTE: loads the best checkpoint automatically
-    print(f"Final test score: {result}")
+    
+    # save test result
+    PATH =  folder + '/result'
+    with open(PATH, "w") as f:
+        f.write(f"Final test score: {result}")
