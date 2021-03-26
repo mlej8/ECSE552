@@ -85,6 +85,6 @@ dataset_train, dataset_val = random_split(dataset, [math.ceil(len(dataset)*0.8),
 dataset_test = WeatherDataset(data_test, targets_test)
 
 # dataloaders
-train_loader = DataLoader(dataset_train, batch_size=batch_size, shuffle=False, collate_fn=weather_collate) # datapoints shall not be shuffled since the order is important
-val_loader  = DataLoader(dataset_val, batch_size=batch_size, shuffle=False, collate_fn=weather_collate)
-test_loader = DataLoader(dataset_test, batch_size=batch_size, shuffle=False, collate_fn=weather_collate)
+train_loader = DataLoader(dataset_train, batch_size=batch_size, shuffle=False, collate_fn=weather_collate, num_workers=num_workers) # datapoints shall not be shuffled since the order is important
+val_loader  = DataLoader(dataset_val, batch_size=batch_size, shuffle=False, collate_fn=weather_collate, num_workers=num_workers)
+test_loader = DataLoader(dataset_test, batch_size=batch_size, shuffle=False, collate_fn=weather_collate, num_workers=num_workers)
