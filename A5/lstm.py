@@ -128,7 +128,7 @@ if __name__ == "__main__":
       callbacks=[early_stopping_callback, checkpoint_callback])
 
     # create model
-    model = LSTM(input_size=len(features), hidden_size=32, target_size=len(targets), num_layers=4)
+    model = LSTM(input_size=len(features), hidden_size=32, target_size=len(targets), num_layers=4, dropout=0.5)
 
     # train
     trainer.fit(model=model, train_dataloader=train_loader, val_dataloaders=val_loader)

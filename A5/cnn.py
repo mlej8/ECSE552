@@ -28,14 +28,16 @@ class CNN(pl.LightningModule):
         self.target_size = target_size
         
         self.conv1 = nn.Conv1d(in_channels=feature_size, out_channels=32, kernel_size=kernel_size)
+        self.conv2 = nn.Conv1d(in_channels=32, out_channels=64, kernel_size=kernel_size)
         self.pooling = nn.MaxPool1d(2)
-        self.fc = nn.Linear(32,16)
-        self.fc2 = nn.Linear(16, target_size)
+        self.fc = nn.Linear(64,32)
+        self.fc2 = nn.Linear(32, target_size)
         
     def forward(self,x):
         # transform input into (batch_size, number of channels, seq_len) as original form is (batch_size, seq_len, number of channels)
         x = x.transpose(1,2)
         x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
         x = self.pooling(x)
         x = torch.flatten(x,1)
         x = F.relu(self.fc(x))
