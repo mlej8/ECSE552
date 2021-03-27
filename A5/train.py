@@ -64,6 +64,7 @@ def train(model):
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
     plt.savefig(folder + f"/{type(model).__name__}_training_validation_test_loss.png")
+    plt.show()
 
     # plot p loss
     plt.plot(range(len(logger.metrics['train_p_loss'])), logger.metrics['train_p_loss'], lw=2, label='Training Loss')
@@ -73,6 +74,7 @@ def train(model):
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
     plt.savefig(folder + f"/p_loss.png")
+    plt.show()
     
     # plot T loss
     plt.plot(range(len(logger.metrics['train_T_loss'])), logger.metrics['train_T_loss'], lw=2, label='Training Loss')
@@ -82,6 +84,7 @@ def train(model):
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
     plt.savefig(folder + f"/T_loss.png")
+    plt.show()
     
     # plot T loss
     plt.plot(range(len(logger.metrics['train_rh_loss'])), logger.metrics['train_rh_loss'], lw=2, label='Training Loss')
@@ -91,6 +94,7 @@ def train(model):
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
     plt.savefig(folder + f"/rh_loss.png")
+    plt.show()
     
     # plot wv loss
     plt.plot(range(len(logger.metrics['train_wv_loss'])), logger.metrics['train_wv_loss'], lw=2, label='Training Loss')
@@ -100,3 +104,4 @@ def train(model):
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
     plt.savefig(folder + f"/wv_loss.png")
+    plt.show()

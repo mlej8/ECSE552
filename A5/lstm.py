@@ -108,4 +108,4 @@ class LSTM(pl.LightningModule):
         return torch.optim.Adam(self.parameters())
 
 if __name__ == "__main__":
-    train(LSTM(input_size=len(features), hidden_size=32, target_size=len(targets), num_layers=2, dropout=0.0))
+    train(LSTM(input_size=len(features), hidden_size=8, target_size=len(targets), num_layers=4, dropout=0.0))
