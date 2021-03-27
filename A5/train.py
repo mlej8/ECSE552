@@ -49,6 +49,7 @@ def train(model):
     # save test result
     PATH = folder + '/result'
     with open(PATH, "w") as f:
+        f.write(f"Model: {str(model)}\n")
         f.write(json.dumps(logger.metrics))
         f.write("\n")
         f.write(f"Lowest training loss: {str(min(logger.metrics['train_loss']))}\n")
