@@ -7,6 +7,7 @@ from preprocess import train_loader, val_loader, test_loader, features, targets
 import matplotlib.pyplot as plt
 from datetime import datetime
 import os
+import json
 
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
@@ -48,7 +49,7 @@ def train(model):
     # save test result
     PATH = folder + '/result'
     with open(PATH, "w") as f:
-        f.write(logger.metrics)
+        f.write(json.dumps(logger.metrics))
         f.write("\n")
         f.write(f"Lowest training loss: {str(min(logger.metrics['train_loss']))}\n")
         f.write(f"Lowest validation loss: {str(min(logger.metrics['val_loss']))}\n")
