@@ -46,6 +46,11 @@ class CNN(pl.LightningModule):
 
         # log training loss
         self.log('train_loss', loss, on_step=False, on_epoch=True, prog_bar=True)
+        with torch.no_grad():
+            self.log('train_p_loss', F.mse_loss(preds[:,0], target[:,0]) , on_step=False, on_epoch=True, prog_bar=False)
+            self.log('train_T_loss', F.mse_loss(preds[:,1], target[:,1]), on_step=False, on_epoch=True, prog_bar=False)
+            self.log('train_rh_loss', F.mse_loss(preds[:,2], target[:,2]), on_step=False, on_epoch=True, prog_bar=False)
+            self.log('train_wv_loss', F.mse_loss(preds[:,3], target[:,3]), on_step=False, on_epoch=True, prog_bar=False)
 
         return loss
 
@@ -66,7 +71,11 @@ class CNN(pl.LightningModule):
 
         # log validation loss
         self.log('val_loss', loss, on_step=False, on_epoch=True, prog_bar=True)
-        
+        self.log('val_p_loss', F.mse_loss(preds[:,0], target[:,0]) , on_step=False, on_epoch=True, prog_bar=False)
+        self.log('val_T_loss', F.mse_loss(preds[:,1], target[:,1]), on_step=False, on_epoch=True, prog_bar=False)
+        self.log('val_rh_loss', F.mse_loss(preds[:,2], target[:,2]), on_step=False, on_epoch=True, prog_bar=False)
+        self.log('val_wv_loss', F.mse_loss(preds[:,3], target[:,3]), on_step=False, on_epoch=True, prog_bar=False)
+   
         return loss
     
     def test_step(self, batch, batch_idx):
@@ -81,6 +90,10 @@ class CNN(pl.LightningModule):
 
         # log validation loss
         self.log('test_loss', loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log('test_p_loss', F.mse_loss(preds[:,0], target[:,0]) , on_step=False, on_epoch=True, prog_bar=False)
+        self.log('test_T_loss', F.mse_loss(preds[:,1], target[:,1]), on_step=False, on_epoch=True, prog_bar=False)
+        self.log('test_rh_loss', F.mse_loss(preds[:,2], target[:,2]), on_step=False, on_epoch=True, prog_bar=False)
+        self.log('test_wv_loss', F.mse_loss(preds[:,3], target[:,3]), on_step=False, on_epoch=True, prog_bar=False)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters())

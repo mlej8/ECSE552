@@ -42,14 +42,6 @@ def train(model):
     # train
     trainer.fit(model=model, train_dataloader=train_loader, val_dataloaders=val_loader)
 
-    # plot training
-    plt.plot(range(len(logger.metrics['train_loss'])), logger.metrics['train_loss'], lw=2, label='Training Loss')
-    plt.plot(range(len(logger.metrics['val_loss'])), logger.metrics['val_loss'], lw=2, label='Validation Loss')
-    plt.legend()
-    plt.xlabel('Epoch')
-    plt.ylabel('MSE Loss')
-    plt.savefig(folder + f"/{type(model).__name__}_training_validation.png")
-
     # test
     result = trainer.test(test_dataloaders=test_loader,verbose=True) # NOTE: loads the best checkpoint automatically
     
@@ -57,3 +49,48 @@ def train(model):
     PATH = folder + '/result'
     with open(PATH, "w") as f:
         f.write(f"Final test score: {result}")
+
+    # plot training
+    plt.plot(range(len(logger.metrics['train_loss'])), logger.metrics['train_loss'], lw=2, label='Training Loss')
+    plt.plot(range(len(logger.metrics['val_loss'])), logger.metrics['val_loss'], lw=2, label='Validation Loss')
+    plt.plot(range(len(logger.metrics['test_loss'])), logger.metrics['test_loss'], lw=2, label='Test Loss')
+    plt.legend()
+    plt.xlabel('Epoch')
+    plt.ylabel('MSE Loss')
+    plt.savefig(folder + f"/{type(model).__name__}_training_validation_test_loss.png")
+
+    # plot p loss
+    plt.plot(range(len(logger.metrics['train_p_loss'])), logger.metrics['train_p_loss'], lw=2, label='Training Loss')
+    plt.plot(range(len(logger.metrics['val_p_loss'])), logger.metrics['val_p_loss'], lw=2, label='Validation Loss')
+    plt.plot(range(len(logger.metrics['test_p_loss'])), logger.metrics['test_p_loss'], lw=2, label='Test Loss')
+    plt.legend()
+    plt.xlabel('Epoch')
+    plt.ylabel('MSE Loss')
+    plt.savefig(folder + f"/p_loss.png")
+    
+    # plot T loss
+    plt.plot(range(len(logger.metrics['train_T_loss'])), logger.metrics['train_T_loss'], lw=2, label='Training Loss')
+    plt.plot(range(len(logger.metrics['val_T_loss'])), logger.metrics['val_T_loss'], lw=2, label='Validation Loss')
+    plt.plot(range(len(logger.metrics['test_T_loss'])), logger.metrics['test_T_loss'], lw=2, label='Test Loss')
+    plt.legend()
+    plt.xlabel('Epoch')
+    plt.ylabel('MSE Loss')
+    plt.savefig(folder + f"/T_loss.png")
+    
+    # plot T loss
+    plt.plot(range(len(logger.metrics['train_rh_loss'])), logger.metrics['train_rh_loss'], lw=2, label='Training Loss')
+    plt.plot(range(len(logger.metrics['val_rh_loss'])), logger.metrics['val_rh_loss'], lw=2, label='Validation Loss')
+    plt.plot(range(len(logger.metrics['test_rh_loss'])), logger.metrics['test_rh_loss'], lw=2, label='Test Loss')
+    plt.legend()
+    plt.xlabel('Epoch')
+    plt.ylabel('MSE Loss')
+    plt.savefig(folder + f"/rh_loss.png")
+    
+    # plot wv loss
+    plt.plot(range(len(logger.metrics['train_wv_loss'])), logger.metrics['train_wv_loss'], lw=2, label='Training Loss')
+    plt.plot(range(len(logger.metrics['val_wv_loss'])), logger.metrics['val_wv_loss'], lw=2, label='Validation Loss')
+    plt.plot(range(len(logger.metrics['test_wv_loss'])), logger.metrics['test_wv_loss'], lw=2, label='Test Loss')
+    plt.legend()
+    plt.xlabel('Epoch')
+    plt.ylabel('MSE Loss')
+    plt.savefig(folder + f"/wv_loss.png")
