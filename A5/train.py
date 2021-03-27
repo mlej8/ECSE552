@@ -59,7 +59,6 @@ def train(model):
     # plot training
     plt.plot(range(len(logger.metrics['train_loss'])), logger.metrics['train_loss'], lw=2, label='Training Loss')
     plt.plot(range(len(logger.metrics['val_loss'])), logger.metrics['val_loss'], lw=2, label='Validation Loss')
-    plt.plot(range(len(logger.metrics['test_loss'])), logger.metrics['test_loss'], lw=2, label='Test Loss')
     plt.legend()
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
@@ -69,7 +68,6 @@ def train(model):
     # plot p loss
     plt.plot(range(len(logger.metrics['train_p_loss'])), logger.metrics['train_p_loss'], lw=2, label='Training Loss')
     plt.plot(range(len(logger.metrics['val_p_loss'])), logger.metrics['val_p_loss'], lw=2, label='Validation Loss')
-    plt.plot(range(len(logger.metrics['test_p_loss'])), logger.metrics['test_p_loss'], lw=2, label='Test Loss')
     plt.legend()
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
@@ -79,7 +77,6 @@ def train(model):
     # plot T loss
     plt.plot(range(len(logger.metrics['train_T_loss'])), logger.metrics['train_T_loss'], lw=2, label='Training Loss')
     plt.plot(range(len(logger.metrics['val_T_loss'])), logger.metrics['val_T_loss'], lw=2, label='Validation Loss')
-    plt.plot(range(len(logger.metrics['test_T_loss'])), logger.metrics['test_T_loss'], lw=2, label='Test Loss')
     plt.legend()
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
@@ -89,7 +86,6 @@ def train(model):
     # plot T loss
     plt.plot(range(len(logger.metrics['train_rh_loss'])), logger.metrics['train_rh_loss'], lw=2, label='Training Loss')
     plt.plot(range(len(logger.metrics['val_rh_loss'])), logger.metrics['val_rh_loss'], lw=2, label='Validation Loss')
-    plt.plot(range(len(logger.metrics['test_rh_loss'])), logger.metrics['test_rh_loss'], lw=2, label='Test Loss')
     plt.legend()
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
@@ -99,7 +95,6 @@ def train(model):
     # plot wv loss
     plt.plot(range(len(logger.metrics['train_wv_loss'])), logger.metrics['train_wv_loss'], lw=2, label='Training Loss')
     plt.plot(range(len(logger.metrics['val_wv_loss'])), logger.metrics['val_wv_loss'], lw=2, label='Validation Loss')
-    plt.plot(range(len(logger.metrics['test_wv_loss'])), logger.metrics['test_wv_loss'], lw=2, label='Test Loss')
     plt.legend()
     plt.xlabel('Epoch')
     plt.ylabel('MSE Loss')
