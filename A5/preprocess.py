@@ -18,7 +18,7 @@ from params import *
 
 # given a history of weather attributes from time t−k to t−1, predict the following values for time t.
 targets = ['p (mbar)', 'T (degC)', 'rh (%)', 'wv (m/s)']
-features = ['hour', 'p (mbar)', 'T (degC)', 'Tpot (K)', 'Tdew (degC)','rh (%)', 'VPmax (mbar)', 'VPact (mbar)', 'VPdef (mbar)', 'sh (g/kg)','H2OC (mmol/mol)', 'rho (g/m**3)', 'wv (m/s)', 'max. wv (m/s)','wd (deg)']
+features = ['p (mbar)', 'T (degC)', 'Tpot (K)', 'Tdew (degC)', 'rh (%)', 'VPmax (mbar)', 'VPact (mbar)', 'VPdef (mbar)', 'sh (g/kg)', 'H2OC (mmol/mol)', 'rho (g/m**3)', 'wv (m/s)', 'max. wv (m/s)', 'hour', 'month', 'wd_cos', 'wd_sin']
 
 class WeatherDataset(torch.utils.data.Dataset):
     def __init__(self, data, labels, transform=None):
@@ -63,7 +63,14 @@ def preprocess(df):
     # time and angles have different notions of similarity compared to temperature
 
     # use the hour in the Date Time column since the time of the day can affect the temperature
-    df["hour"] = pd.to_datetime(df.pop("Date Time"), format='%d.%m.%Y %H:%M:%S').apply(lambda x: x.hour)
+    date_time = pd.to_datetime(df.pop("Date Time"), format='%d.%m.%Y %H:%M:%S')
+    df["hour"] = date_time.dt.hour
+    df["month"] = date_time.dt.month
+
+    # transform degree into sin and cos
+    wd_deg = df.pop("wd (deg)")
+    df["wd_cos"] = np.cos(np.deg2rad(wd_deg))
+    df["wd_sin"] = np.sin(np.deg2rad(wd_deg))
 
     # apply standardization (x-mean/std)
     df = (df-df.mean())/df.std()
