@@ -44,7 +44,7 @@ def train(model):
     trainer.fit(model=model, train_dataloader=train_loader, val_dataloaders=val_loader)
 
     # test
-    result = trainer.test(test_dataloaders=test_loader,verbose=True) # NOTE: loads the best checkpoint automatically
+    result = trainer.test(test_dataloaders=test_loader, verbose=True)
     
     # save test result
     PATH = folder + '/result'
