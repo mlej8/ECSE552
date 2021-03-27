@@ -48,7 +48,11 @@ def train(model):
     # save test result
     PATH = folder + '/result'
     with open(PATH, "w") as f:
-        f.write(f"Final test score: {result}")
+        f.write(logger.metrics)
+        f.write("\n")
+        f.write(f"Lowest training loss: {str(min(logger.metrics['train_loss']))}\n")
+        f.write(f"Lowest validation loss: {str(min(logger.metrics['val_loss']))}\n")
+        f.write(f"Test loss: {result}")
 
     # plot training
     plt.plot(range(len(logger.metrics['train_loss'])), logger.metrics['train_loss'], lw=2, label='Training Loss')
