@@ -59,9 +59,7 @@ def weather_collate(batch):
     targets = torch.stack([item[1] for item in batch]).float()
     return data, targets
 
-def preprocess(df):
-    # time and angles have different notions of similarity compared to temperature
-
+def preprocess(df, mean, std):
     # use the hour in the Date Time column since the time of the day can affect the temperature
     date_time = pd.to_datetime(df.pop("Date Time"), format='%d.%m.%Y %H:%M:%S')
     df["hour"] = date_time.dt.hour
@@ -73,7 +71,7 @@ def preprocess(df):
     df["wd_sin"] = np.sin(np.deg2rad(wd_deg))
 
     # apply standardization (x-mean/std)
-    df = (df-df.mean())/df.std()
+    df = (df-mean)/std
 
     # get targets and data
     labels = df[targets]
@@ -81,12 +79,27 @@ def preprocess(df):
 
     return data, labels
 
+def find_mean_std(train_df):
+    """ Preprocess method that returns the mean and std of the dataframe as Pandas series. """
+    # use the hour in the Date Time column since the time of the day can affect the temperature
+    date_time = pd.to_datetime(train_df.pop("Date Time"), format='%d.%m.%Y %H:%M:%S')
+    train_df["hour"] = date_time.dt.hour
+    train_df["month"] = date_time.dt.month
+
+    # transform degree into sin and cos
+    wd_deg = train_df.pop("wd (deg)")
+    train_df["wd_cos"] = np.cos(np.deg2rad(wd_deg))
+    train_df["wd_sin"] = np.sin(np.deg2rad(wd_deg))
+
+    return train_df.mean(), train_df.std()
+
 data_train = pd.read_csv('weather_train.csv')
 data_test = pd.read_csv('weather_test.csv')
 
 # create weather dataset
-data_train, targets_train = preprocess(data_train)
-data_test, targets_test = preprocess(data_test)
+train_mean, train_std = find_mean_std(data_train.copy(deep=True))
+data_train, targets_train = preprocess(data_train, train_mean, train_std)
+data_test, targets_test = preprocess(data_test, train_mean, train_std)
 dataset = WeatherDataset(data_train, targets_train)
 dataset_train, dataset_val = random_split(dataset, [math.ceil(len(dataset)*0.8),math.floor(len(dataset)*0.2)])
 dataset_test = WeatherDataset(data_test, targets_test)
