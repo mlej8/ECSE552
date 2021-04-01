@@ -7,6 +7,7 @@ from torch.utils.data import random_split, DataLoader
 from torch.utils.data import Dataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence
 
+from sklearn.model_selection import train_test_split
 import pandas as pd
 import pickle
 import datetime
@@ -96,12 +97,16 @@ def find_mean_std(train_df):
 data_train = pd.read_csv('weather_train.csv')
 data_test = pd.read_csv('weather_test.csv')
 
+# split training into train and val
+data_train, data_val = train_test_split(data_train, shuffle=False, test_size=0.2)
+
 # create weather dataset
 train_mean, train_std = find_mean_std(data_train.copy(deep=True))
 data_train, targets_train = preprocess(data_train, train_mean, train_std)
+data_val, targets_val = preprocess(data_val, train_mean, train_std)
 data_test, targets_test = preprocess(data_test, train_mean, train_std)
-dataset = WeatherDataset(data_train, targets_train)
-dataset_train, dataset_val = random_split(dataset, [math.ceil(len(dataset)*0.8),math.floor(len(dataset)*0.2)])
+dataset_train = WeatherDataset(data_train, targets_train)
+dataset_val = WeatherDataset(data_val, targets_val)
 dataset_test = WeatherDataset(data_test, targets_test)
 
 # dataloaders
