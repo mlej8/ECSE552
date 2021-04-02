@@ -97,6 +97,10 @@ def find_mean_std(train_df):
 data_train = pd.read_csv('weather_train.csv')
 data_test = pd.read_csv('weather_test.csv')
 
+# drop rows where outliers are present
+data_test.drop(data_test.loc[data_test['wv (m/s)']==-9999].index, inplace=True)
+data_test.drop(data_test.loc[data_test['max. wv (m/s)']==-9999].index, inplace=True)
+
 # split training into train and val
 data_train, data_val = train_test_split(data_train, shuffle=False, test_size=0.2)
 
