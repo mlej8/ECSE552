@@ -10,7 +10,7 @@ from dict_logger import logger
 
 from params import *
 
-from preprocess import features, targets
+from preprocess import features, targets, targets_idx
 
 class MLP(pl.LightningModule):
     def __init__(self, feature_size, target_size, dropout=0.2):
@@ -74,26 +74,60 @@ class MLP(pl.LightningModule):
         
         return loss
     
+    # def test_step(self, batch, batch_idx):
+    #     # get data and target
+    #     data, target = batch
+        
+    #     # forward pass
+    #     preds = self(data)
+        
+    #     # compute MSE loss
+    #     loss = F.mse_loss(preds, target)
+
+    #     # log test loss
+    #     self.log('test_loss', torch.sqrt(loss), on_step=False, on_epoch=True, prog_bar=True)
+    #     self.log('test_p_loss', torch.sqrt(F.mse_loss(preds[:,0], target[:,0])) , on_step=False, on_epoch=True, prog_bar=False)
+    #     self.log('test_T_loss', torch.sqrt(F.mse_loss(preds[:,1], target[:,1])), on_step=False, on_epoch=True, prog_bar=False)
+    #     self.log('test_rh_loss', torch.sqrt(F.mse_loss(preds[:,2], target[:,2])), on_step=False, on_epoch=True, prog_bar=False)
+    #     self.log('test_wv_loss', torch.sqrt(F.mse_loss(preds[:,3], target[:,3])), on_step=False, on_epoch=True, prog_bar=False)
+   
     def test_step(self, batch, batch_idx):
         # get data and target
-        data, target = batch
+        data, targets = batch
         
-        # forward pass
-        preds = self(data)
-        
-        # compute MSE loss
-        loss = F.mse_loss(preds, target)
+        for i in range(0,k+1):
+            # preprocess data
+            features = data[:, i:i+k]
+            target = targets[:,i]
 
-        # log validation loss
-        self.log('test_loss', torch.sqrt(loss), on_step=False, on_epoch=True, prog_bar=True)
-        self.log('test_p_loss', torch.sqrt(F.mse_loss(preds[:,0], target[:,0])) , on_step=False, on_epoch=True, prog_bar=False)
-        self.log('test_T_loss', torch.sqrt(F.mse_loss(preds[:,1], target[:,1])), on_step=False, on_epoch=True, prog_bar=False)
-        self.log('test_rh_loss', torch.sqrt(F.mse_loss(preds[:,2], target[:,2])), on_step=False, on_epoch=True, prog_bar=False)
-        self.log('test_wv_loss', torch.sqrt(F.mse_loss(preds[:,3], target[:,3])), on_step=False, on_epoch=True, prog_bar=False)
+            # forward pass
+            preds = self(features)
+        
+            # compute MSE loss
+            loss = F.mse_loss(preds, target)
+
+            # use previous prediction as features for next prediction 
+            if i+k < data.size(1):
+                data[:,i+k,targets_idx['p (mbar)']] = preds[:,0]
+                data[:,i+k,targets_idx['T (degC)']] = preds[:,1]
+                data[:,i+k,targets_idx['rh (%)']] = preds[:,2]
+                data[:,i+k,targets_idx['wv (m/s)']] = preds[:,3]
+            
+            t_loss = torch.sqrt(loss)
+            p_loss = torch.sqrt(F.mse_loss(preds[:,0], target[:,0]))
+            T_loss = torch.sqrt(F.mse_loss(preds[:,1], target[:,1]))
+            rh_loss = torch.sqrt(F.mse_loss(preds[:,2], target[:,2]))
+            wv_loss = torch.sqrt(F.mse_loss(preds[:,3], target[:,3]))
+
+            # log test loss
+            self.log(f'test_t_{i}_loss', t_loss, on_step=False, on_epoch=True, prog_bar=True)
+            self.log(f'test_p_loss_t_{i}', p_loss, on_step=False, on_epoch=True, prog_bar=False)
+            self.log(f'test_T_loss_t_{i}', T_loss, on_step=False, on_epoch=True, prog_bar=False)
+            self.log(f'test_rh_loss_t_{i}', rh_loss, on_step=False, on_epoch=True, prog_bar=False)
+            self.log(f'test_wv_loss_t_{i}', wv_loss, on_step=False, on_epoch=True, prog_bar=False)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters())
-
 
 if __name__ == "__main__":
     train(MLP(len(features), len(targets)))

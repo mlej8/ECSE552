@@ -113,6 +113,9 @@ dataset_train = WeatherDataset(data_train, targets_train)
 dataset_val = WeatherDataset(data_val, targets_val)
 dataset_test = WeatherDataset(data_test, targets_test)
 
+# create dictionary mapping column to indexing
+targets_idx = {'p (mbar)':data_train.columns.get_loc('p (mbar)'), 'T (degC)':data_train.columns.get_loc('T (degC)'), 'rh (%)':data_train.columns.get_loc('rh (%)'), 'wv (m/s)':data_train.columns.get_loc('wv (m/s)')}
+
 # dataloaders
 train_loader = DataLoader(dataset_train, batch_size=batch_size, shuffle=False, collate_fn=weather_collate, num_workers=num_workers) # datapoints shall not be shuffled since the order is important
 val_loader  = DataLoader(dataset_val, batch_size=batch_size, shuffle=False, collate_fn=weather_collate, num_workers=num_workers)
