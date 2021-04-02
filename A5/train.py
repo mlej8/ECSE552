@@ -1,4 +1,4 @@
-from dict_logger import logger
+from dict_logger import DictLogger
 
 from params import *
 
@@ -16,6 +16,9 @@ from pytorch_ranger import RangerQH
 
 
 def train(model):
+    # create a logger
+    logger = DictLogger()
+    
     # create folder for each run
     folder = "models/{}".format(datetime.now().strftime("%b-%d-%H-%M-%S"))
     if not os.path.exists(folder):
@@ -35,7 +38,7 @@ def train(model):
     # define trainer 
     trainer = pl.Trainer(
       default_root_dir=folder, # Lightning automates saving and loading checkpoints
-      max_epochs=epochs, gpus=1,
+      max_epochs=epochs, gpus=0,
       logger=logger, 
       progress_bar_refresh_rate=30, 
       callbacks=[early_stopping_callback, checkpoint_callback])

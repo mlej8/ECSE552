@@ -52,10 +52,10 @@ class WeatherDatasetErrorPropagation(torch.utils.data.Dataset):
 
 def write_results(model, result):
     # create folder for each run
-    folder = "results/{}".format(datetime.now().strftime("%b-%d-%H-%M-%S"))
+    folder = f"results/{type(model).__name__}"
     if not os.path.exists(folder):
         os.makedirs(folder)
-    PATH = folder + f'/{type(model).__name__}'
+    PATH = folder + f'/{datetime.now().strftime("%b-%d-%H-%M-%S")}'
     with open(PATH, "w") as f:
         f.write(f"Model: {str(model)}\n")
         f.write(json.dumps(logger.metrics))
