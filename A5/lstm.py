@@ -4,8 +4,6 @@ import torch.nn.functional as F
 
 import pytorch_lightning as pl
 
-from dict_logger import logger
-
 from preprocess import features, targets, targets_idx
 
 from params import k

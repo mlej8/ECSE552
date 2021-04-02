@@ -2,7 +2,7 @@
 #SBATCH --gres=gpu:1              # Number of GPU(s) per node
 #SBATCH --cpus-per-task=1         # CPU cores/threads
 #SBATCH --mem=8G                  # memory
-#SBATCH --time=60                 # A time limit of zero requests that no time limit be imposed. Acceptable time formats include "minutes", "minutes:seconds", "hours:minutes:seconds", "days-hours", "days-hours:minutes" and "days-hours:minutes:seconds".
+#SBATCH --time=40                 # A time limit of zero requests that no time limit be imposed. Acceptable time formats include "minutes", "minutes:seconds", "hours:minutes:seconds", "days-hours", "days-hours:minutes" and "days-hours:minutes:seconds".
 #SBATCH --job-name=ecse552
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --mail-user=er.li@mail.mcgill.ca
