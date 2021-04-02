@@ -1,4 +1,4 @@
-from dict_logger import logger
+from dict_logger import DictLogger
 
 from params import *
 
@@ -16,6 +16,9 @@ from pytorch_ranger import RangerQH
 
 
 def train(model):
+    # create a logger
+    logger = DictLogger()
+
     # create folder for each run
     folder = "models/{}".format(datetime.now().strftime("%b-%d-%H-%M-%S"))
     if not os.path.exists(folder):

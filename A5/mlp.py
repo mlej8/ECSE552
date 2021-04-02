@@ -6,8 +6,6 @@ import pytorch_lightning as pl
 
 from train import train
 
-from dict_logger import logger
-
 from params import *
 
 from preprocess import features, targets
