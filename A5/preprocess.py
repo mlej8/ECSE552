@@ -3,8 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from torch.utils.data import random_split, DataLoader
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import random_split, Dataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence
 
 from sklearn.model_selection import train_test_split
